@@ -1,0 +1,6 @@
+name: BetterKits
+version: 1.0-SNAPSHOT
+main: io.rokuko.betterkits.BetterKits
+description: A better kit plugin for bukkit server.
+depend:
+  - Cloudit
