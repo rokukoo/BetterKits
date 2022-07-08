@@ -76,7 +76,7 @@ public class BetterKits extends Module {
     }
 
     private void giveKit(CommandSender sender, String[] args) {
-
+        nmzxcmzxczkxckzx
     }
 
     private void removeKit(CommandSender sender, String[] args) {
