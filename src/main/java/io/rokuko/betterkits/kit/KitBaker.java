@@ -1,5 +1,6 @@
 package io.rokuko.betterkits.kit;
 
+import io.rokuko.betterkits.kit.reward.Reward;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -20,12 +21,7 @@ public class KitBaker {
         String name = configuration.getString("name");
         String type = configuration.getString("type");
         Integer limit = configuration.getInt("limit");
-        Kit kit = new Kit();
-        kit.setName(name);
-        kit.setKitType(type == null ? KitType.CDKEY : KitType.valueOf(type.toUpperCase(Locale.ROOT)));
-        kit.setLimit(limit);
-        Reward reward = Reward.from(configuration.getStringList("rewards"));
-        kit.setRewards(reward);
+        Kit kit = Kit.of(name, type == null ? KitType.CDKEY : KitType.valueOf(type.toUpperCase(Locale.ROOT)), limit, configuration.getStringList("rewards"));
         kitLinkedHashMap.put(name, kit);
         return kit;
     }

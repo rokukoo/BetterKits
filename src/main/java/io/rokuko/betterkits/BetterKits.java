@@ -1,27 +1,21 @@
 package io.rokuko.betterkits;
 
-import cn.neptunex.cloudit.bukkit.event.EventChain;
 import cn.neptunex.cloudit.module.Module;
 import cn.neptunex.cloudit.utils.ChatColorUtils;
 import cn.neptunex.cloudit.utils.FileUtils;
-import io.rokuko.betterkits.api.PreRemoveKitEvent;
 import io.rokuko.betterkits.config.ProxyConfig;
 import io.rokuko.betterkits.kit.*;
-import io.rokuko.betterkits.utils.ItemUtils;
+import io.rokuko.betterkits.kit.reward.Reward;
 import io.rokuko.betterkits.utils.KitUtils;
 import lombok.SneakyThrows;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.*;
 
 public class BetterKits extends Module {
@@ -77,28 +71,23 @@ public class BetterKits extends Module {
             sender.sendMessage(PREFIX + ChatColorUtils.colorization("&7Please input an kit name."));
             return "";
         }
-        String name = args[1];
-        if (!KitBaker.kitLinkedHashMap.containsKey(name)){
-            sender.sendMessage(PREFIX + ChatColorUtils.colorization("&7There're no kit named &e" + name + "&7."));
-            return "";
-        }
-        return name;
+        return args[1];
     }
 
     @SneakyThrows
     private void addKit(CommandSender sender, String[] args) {
         String name = checkArgsReturnName(sender, args);
         if (name.isEmpty()) return;
+        if (KitUtils.checkExistsKit(name)) {
+            sender.sendMessage(PREFIX + ChatColorUtils.colorization("&7There're no kit named &e" + name + "&7."));
+            return;
+        }
 
         if (sender instanceof Player){
             Player player = (Player) sender;
             File file = new File(kitDirectories, name + ".yml");
             YamlConfiguration kitYaml = KitUtils.getKitYamlByFile(file);
             List rewards = new LinkedList();
-//            List<String> rewards = kitYaml.getItemStack("rewards");
-//            Arrays.stream(player.getInventory().getStorageContents())
-//                    .filter(Objects::nonNull)
-//                    .forEach(rewards::add);
             kitYaml.set("rewards", rewards);
             kitYaml.save(file);
         }
@@ -117,8 +106,9 @@ public class BetterKits extends Module {
                     TextComponent textComponent = new TextComponent(ChatColorUtils.colorization(String.format("  &8- &f%s &8[&7%s&8]", entry.getKey(), entry.getValue().getKitType().name())));
                     List<String> messages = new LinkedList<>();
                     messages.add(ChatColorUtils.colorization(String.format(" &3%s", entry.getKey())));
-                    entry.getValue().getRewards().getItemStacks().forEach(itemStack->messages.add(ChatColorUtils.colorization(String.format("&8- &f%s", ItemUtils.toString(itemStack)))));
-                    entry.getValue().getRewards().getCommands().forEach(command->messages.add(ChatColorUtils.colorization(String.format("&8- &f%s", command.toString()))));
+                    messages.add("");
+                    entry.getValue().getRewards().forEach( reward -> messages.add(ChatColorUtils.colorization(String.format("&8- &f%s", reward.toString()))));
+                    messages.add("");
                     textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(String.join("\n", messages))));
                     textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/bk give %s", entry.getKey())));
                     Player player = (Player) sender;
@@ -129,7 +119,11 @@ public class BetterKits extends Module {
 
     private void giveKit(CommandSender sender, String[] args) {
         String name = checkArgsReturnName(sender, args);
-        KitBaker.kitLinkedHashMap.get(name).getRewards().reward2Player((Player) sender);
+        if (KitUtils.checkExistsKit(name)) {
+            sender.sendMessage(PREFIX + ChatColorUtils.colorization("&7There're no kit named &e" + name + "&7."));
+            return;
+        }
+        KitBaker.kitLinkedHashMap.get(name).rewardPlayer((Player) sender);
     }
 
     private void openKit(CommandSender sender, String[] args) {
@@ -146,7 +140,10 @@ public class BetterKits extends Module {
     private void removeKit(CommandSender sender, String[] args) {
         String name = checkArgsReturnName(sender, args);
         if (name.isEmpty()) return;
-
+        if (!KitUtils.checkExistsKit(name)) {
+            sender.sendMessage(PREFIX + ChatColorUtils.colorization("&7There're no kit named &e" + name + "&7."));
+            return;
+        }
         KitController.removeKitByName(this, name, sender);
     }
 
