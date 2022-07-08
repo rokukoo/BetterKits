@@ -76,9 +76,7 @@ public class BetterKits extends Module {
     }
 
     private void giveKit(CommandSender sender, String[] args) {
-        123;
-        1231;
-        123213;
+        12837812738912312
     }
 
     private void removeKit(CommandSender sender, String[] args) {
@@ -126,7 +124,6 @@ public class BetterKits extends Module {
 
     @Override
     public boolean onUnActivate(Context context) {
-
 
         return true;
     }
