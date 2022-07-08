@@ -1,0 +1,7 @@
+settings:
+  enable: true
+
+kits:
+  - name: 邀请好友礼包
+    type: cdkey
+    limit: 0
