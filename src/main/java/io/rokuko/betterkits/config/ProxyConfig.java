@@ -22,9 +22,4 @@ public class ProxyConfig {
         return this;
     }
 
-    public List<Kit> getAllKits(){
-//        this.configuration.getConfigurationSection()
-        return null;
-    }
-
 }
