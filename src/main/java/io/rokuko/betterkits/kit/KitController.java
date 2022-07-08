@@ -41,6 +41,7 @@ public class KitController {
                     }else{
                         sender.sendMessage(betterKits.PREFIX + ChatColorUtils.colorization("&7Failed to remove the kit &e" + name + "&7."));
                     }
+                    KitBaker.kitLinkedHashMap.remove(name);
                     e.setCancelled(true);
                 });
         sender.sendMessage(betterKits.PREFIX + ChatColorUtils.colorization("&7Confirm to remove kit &e" + name + "&7?(Please input &eyes&7/&eno&7 in 5s)"));
@@ -69,7 +70,7 @@ public class KitController {
                 if (reward instanceof ItemReward){
                     lines.add(String.format("item:%d:%d", ((ItemReward) reward).getItemStack().getTypeId(), ((ItemReward) reward).getItemStack().getAmount()));
                 }else if(reward instanceof CommandReward){
-                    lines.add(String.format("command:%s:%s", ((CommandReward) reward).is().getTypeId(), ((ItemReward) reward).getItemStack().getAmount()));
+                    lines.add(String.format("command:%s:%s", ((CommandReward) reward).isOp()?"op":"player", ((CommandReward) reward).getCommandLine()));
                 }
             });
         }

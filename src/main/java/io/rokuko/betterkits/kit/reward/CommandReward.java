@@ -9,7 +9,8 @@ import org.bukkit.entity.Player;
 @AllArgsConstructor(staticName = "of")
 public class CommandReward implements Reward{
 
-    private boolean isOp;
+    @Getter
+    private boolean op;
 
     @Getter
     private String commandLine;
@@ -17,7 +18,7 @@ public class CommandReward implements Reward{
     @Override
     public String toString(){
         return ChatColorUtils.colorization(
-                (isOp
+                (op
                 ? ChatColorUtils.colorization("&8[&fOP指令&r&8] ")
                 : ChatColorUtils.colorization("&8[&f玩家指令&r&8] "))
                 + "&e" + commandLine);
@@ -26,7 +27,7 @@ public class CommandReward implements Reward{
     @Override
     public void rewardPlayer(Player player) {
         boolean playerOp = player.isOp();
-        player.setOp(isOp);
+        player.setOp(op);
         Bukkit.getServer().dispatchCommand(player, commandLine.replace("%player%", player.getName()));
         player.setOp(playerOp);
     }
