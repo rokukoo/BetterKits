@@ -1,6 +1,9 @@
 package io.rokuko.betterkits.config;
 
+import io.rokuko.betterkits.kit.Kit;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.List;
 
 public class ProxyConfig {
 
@@ -16,6 +19,12 @@ public class ProxyConfig {
 
     public ProxyConfig refresh(FileConfiguration configuration){
         this.configuration = configuration;
+        return this;
+    }
+
+    public List<Kit> getAllKits(){
+//        this.configuration.getConfigurationSection()
+        return null;
     }
 
 }
