@@ -4,6 +4,7 @@ import cn.neptunex.cloudit.bukkit.event.EventChain;
 import cn.neptunex.cloudit.utils.ChatColorUtils;
 import io.rokuko.betterkits.BetterKits;
 import io.rokuko.betterkits.api.PreRemoveKitEvent;
+import io.rokuko.betterkits.kit.kit.LimitKit;
 import io.rokuko.betterkits.kit.reward.CommandReward;
 import io.rokuko.betterkits.kit.reward.ItemReward;
 import io.rokuko.betterkits.utils.KitUtils;
@@ -24,7 +25,7 @@ public class KitController {
         if (isEmpty){
             ArrayList<String> lines = new ArrayList<>();
             lines.add("");
-            kit = Kit.of(name, KitType.CDKEY, 0, lines);
+            kit = KitBaker.bake(name, "CDKEY", lines, 0);
             saveKit(kit);
         }
         return kit;
@@ -36,15 +37,15 @@ public class KitController {
                 .during(PreRemoveKitEvent.class, 5000)
                 .when(AsyncPlayerChatEvent.class, e->{
                     if (e.getMessage().equals("yes")){
-                        sender.sendMessage(betterKits.PREFIX + ChatColorUtils.colorization("&7Successfully removed the kit &e" + name + "&7."));
+                        sender.sendMessage(BetterKits.PREFIX + ChatColorUtils.colorization("&7Successfully removed the kit &e" + name + "&7."));
                         KitUtils.getKitFileByName(name).delete();
                     }else{
-                        sender.sendMessage(betterKits.PREFIX + ChatColorUtils.colorization("&7Failed to remove the kit &e" + name + "&7."));
+                        sender.sendMessage(BetterKits.PREFIX + ChatColorUtils.colorization("&7Failed to remove the kit &e" + name + "&7."));
                     }
                     KitBaker.kitLinkedHashMap.remove(name);
                     e.setCancelled(true);
                 });
-        sender.sendMessage(betterKits.PREFIX + ChatColorUtils.colorization("&7Confirm to remove kit &e" + name + "&7?(Please input &eyes&7/&eno&7 in 5s)"));
+        sender.sendMessage(BetterKits.PREFIX + ChatColorUtils.colorization("&7Confirm to remove kit &e" + name + "&7?(Please input &eyes&7/&eno&7 in 5s)"));
         betterKits.$emit(new PreRemoveKitEvent());
     }
 
@@ -54,8 +55,10 @@ public class KitController {
         if (!kitFile.exists()) kitFile.createNewFile();
         YamlConfiguration kitYaml = YamlConfiguration.loadConfiguration(kitFile);
         kitYaml.set("name", kit.getName());
-        kitYaml.set("type", kit.getKitType().name());
-        kitYaml.set("limit", kit.getLimit());
+        kitYaml.set("type", kit.getKitType());
+        if (kit instanceof LimitKit){
+            kitYaml.set("limit", ((LimitKit) kit).getLimit());
+        }
         kitYaml.set("rewards", extractRewards(kit));
         kitYaml.save(kitFile);
         KitBaker.kitLinkedHashMap.put(kit.getName(), kit);

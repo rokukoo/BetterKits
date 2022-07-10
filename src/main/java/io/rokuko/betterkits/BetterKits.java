@@ -107,9 +107,9 @@ public class BetterKits extends Module {
                 : "";
 
         KitBaker.kitLinkedHashMap.entrySet().stream()
-                .filter(entry->entry.getValue().getKitType().name().contains(filter))
+                .filter(entry->entry.getValue().getKitType().contains(filter))
                 .forEach(entry -> {
-                    TextComponent textComponent = new TextComponent(ChatColorUtils.colorization(String.format("  &8- &f%s &8[&7%s&8]", entry.getKey(), entry.getValue().getKitType().name())));
+                    TextComponent textComponent = new TextComponent(ChatColorUtils.colorization(String.format("  &8- &f%s &8[&7%s&8]", entry.getKey(), entry.getValue().getKitType())));
                     List<String> messages = new LinkedList<>();
                     messages.add(ChatColorUtils.colorization(String.format(" &3%s", entry.getKey())));
                     messages.add("");

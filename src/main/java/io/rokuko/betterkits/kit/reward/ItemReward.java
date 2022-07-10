@@ -22,5 +22,4 @@ public class ItemReward implements Reward{
         return ChatColorUtils.colorization("&8[&r" + itemStack.getType().name() + "&8&l] &7x&r &e" + itemStack.getAmount());
     }
 
-
 }
