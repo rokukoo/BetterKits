@@ -167,6 +167,7 @@ public class BetterKits extends Module {
     }
 
     private void loadKits(){
+        KitBaker.kitLinkedHashMap.clear();
         FileUtils.getFiles(kitDirectories).forEach(KitBaker::bakeFile2Kit);
     }
 
