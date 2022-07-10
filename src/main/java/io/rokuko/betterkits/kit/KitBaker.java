@@ -4,7 +4,6 @@ import io.rokuko.betterkits.kit.kit.CdkeyKit;
 import io.rokuko.betterkits.kit.kit.ConditionKit;
 import io.rokuko.betterkits.kit.kit.LimitKit;
 import io.rokuko.betterkits.kit.kit.TimeKit;
-import io.rokuko.betterkits.kit.reward.Reward;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

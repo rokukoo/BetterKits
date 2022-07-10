@@ -15,14 +15,17 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class BetterKits extends Module {
 
     public static ProxyConfig proxyConfig;
     public static File kitDirectories;
+    public static File dataDirectories;
     public final static String PREFIX = ChatColorUtils.colorization("&3Better&bKits&r ");
 
     public BetterKits() {
@@ -40,6 +43,18 @@ public class BetterKits extends Module {
 
         kitDirectories = new File(getDataFolder(), "kits");
         if (!kitDirectories.exists()) kitDirectories.mkdirs();
+
+        dataDirectories = new File(getDataFolder(), "datas");
+        if (!dataDirectories.exists()) dataDirectories.mkdirs();
+
+        $listener(PlayerJoinEvent.class, event -> {
+            File file = new File(dataDirectories, event.getPlayer().getUniqueId() + ".yml");
+               if (!file.exists()){
+                   try {
+                       file.createNewFile();
+                   } catch (IOException e) { }
+               }
+        });
 
         loadKits();
 
@@ -129,7 +144,10 @@ public class BetterKits extends Module {
             sender.sendMessage(PREFIX + ChatColorUtils.colorization("&7There're no kit named &e" + name + "&7."));
             return;
         }
-        KitBaker.kitLinkedHashMap.get(name).rewardPlayer((Player) sender);
+        Kit kit = KitUtils.getKitByName(name);
+        if (kit.canReward((Player) sender, "")){
+            kit.rewardPlayer((Player) sender);
+        }
     }
 
     private void openKit(CommandSender sender, String[] args) {
